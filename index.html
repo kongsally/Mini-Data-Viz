@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab" rel="stylesheet">
+<link rel="stylesheet" href="src/main.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqcloud/1.0.4/jqcloud-1.0.4.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqcloud/1.0.4/jqcloud.css">
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="src/main.js"></script>
+</head>
+<body>
+	<div class="header"> 
+		<h1>Philadelphia Public Art Proposals</h1>
+	</div>
+	<div class="text-block">
+		<p class="centered"> In Philadelphia's City Hall, the <a href="http://monumentlab.muralarts.org/">Monument Lab</a> collected over 400 people's response to the question: </p>
+		<p id="question" class="centered">"What is an ideal monument for the current city of Philadelphia?" </p>
+		<iframe width='100%' height='400' frameborder='0' src='https://haverfordds.carto.com/viz/7d922318-fbff-11e4-b453-0e0c41326911/embed_map' allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+		<p>The interactive map was made by <a href="http://library.haverford.edu/services/digital-scholarship/">Haverford's Digital Scholarship fellows</a> and they made the proposal data available trhough <a href="https://www.opendataphilly.org/">Open Data Philly</a>. The following are some data visualizations made to better understand the people and the content in these proposals</p>
+	</div>
+	<div class="header"> 
+		<h1>Topics Proposed</h1>
+	</div>
+	<div id="topicCloud" class="chart"></div>
+	<div class="header"> 
+		<h1>Number of Proposals by Age</h1>
+	</div>
+	<div id="ageChart" class="chart"></div>
+</body>
+</html>

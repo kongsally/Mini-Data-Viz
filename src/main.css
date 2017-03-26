@@ -1,0 +1,33 @@
+body {
+	margin: 0;
+	font-family: 'Roboto', sans-serif;
+}
+
+.header {
+	background-color: #E2EFDE;
+	color: #374B4A;
+	font-family: 'Roboto Slab', serif;
+	padding: 2%;
+	text-align: center;
+	width: 100%;
+	z-index:1000;
+}
+
+#question {
+	color: #093A3E;
+	font-size: 1.5em;
+}
+
+.centered {
+	text-align: center;
+}
+
+.text-block {
+	font-family: 'Roboto', sans-serif;
+	padding: 2% 10% 2% 10%;
+	width: 80%;
+}
+
+.chart {
+	margin-left: 10%;
+}
