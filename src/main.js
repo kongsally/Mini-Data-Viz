@@ -3,7 +3,7 @@ var geoJson_data;
 var topics = [];
 var chart_width = $(window).width() * 0.8;
 
-function loadGeoJson(drawAgeChart) {
+function loadGeoJson(drawAgeChart, drawTopicCloud {
 	$.getJSON("../assets/monument_lab_master.geojson", function( data ) { 
       	geoJson_data = data.features;
       	console.log(geoJson_data);
