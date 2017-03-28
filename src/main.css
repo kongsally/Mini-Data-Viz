@@ -3,13 +3,23 @@ body {
 	font-family: 'Roboto', sans-serif;
 }
 
+body p {
+	font-size: 1.2em;
+}
+
+a, a:visited {
+	color: #00A186;
+	font-weight: 500;
+	text-decoration: underline;
+}
+
 .header {
 	background-color: #E2EFDE;
 	color: #374B4A;
 	font-family: 'Roboto Slab', serif;
 	padding: 2%;
+	position: relative;
 	text-align: center;
-	width: 100%;
 	z-index:1000;
 }
 
@@ -29,5 +39,46 @@ body {
 }
 
 .chart {
-	margin-left: 10%;
+	/*margin-left: 10%;*/
+}
+
+.wrapper{
+	display: flex;
+	width: 80%;
+	padding: 0 10% 0 10%;
+}
+
+#topicCloud {
+	height: 500px;
+	padding: 1em;
+}
+
+#topicProposalNumberWrapper {
+	flex-grow: 1;
+	display: flex;
+  	justify-content: center;
+  	text-align: center;
+  	background-color: #eee;
+  	margin: 1em;
+}
+
+#topicProposalNumberWrapper > h1 {
+	align-self: center;
+	text-align: center;
+	color: #374B4A;
+}
+
+#topicCloud > span:hover, #topicCloud > span::selection{
+	background-color: #E2EFDE;
+    color: #374B4A;
+    cursor: pointer;
+}
+
+#topicProposalNumber {
+	text-align: center;
+}
+
+#ageAnalysis {
+	flex-grow: 1;
+	padding: 2em;
 }

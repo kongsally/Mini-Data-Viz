@@ -1,9 +1,9 @@
 
 var geoJson_data;
 var topics = [];
-var chart_width = $(window).width() * 0.8;
+var chart_width = $(window).width() * 0.6;
 
-function loadGeoJson(drawAgeChart, drawTopicCloud {
+function loadGeoJson(drawAgeChart, drawTopicCloud) {
 	$.getJSON("../assets/monument_lab_master.geojson", function( data ) { 
       	geoJson_data = data.features;
       	console.log(geoJson_data);
@@ -57,7 +57,8 @@ function processTopics() {
 
 	var topics_n = topics.length;
 	var topics_count = Array(topics_n).fill(0);
-	var topics_proposals = Object.keys(geoJson_data[0].properties).filter(function(k) {
+	var topics_proposals = Object.keys(geoJson_data[0].properties)
+		.filter(function(k) {
 		    return k.indexOf('topic') == 0;
 		}).reduce(function(newData, k) {
 		    newData[k] = [];
@@ -65,7 +66,7 @@ function processTopics() {
 		}, {});
 
 	
-	// Creating an object of ages and its counts
+	// Creating an object of topics and proposal descriptions
 	for (var i = 0; i < geoJson_data.length; i++) {
 		for (var j = 0; j < topics_n; j++) {
 			var currentTopic = topics[j];
@@ -128,11 +129,15 @@ function drawAgeChart() {
 	age_range_data.addRows(age_chart_data);
 
 	// Set chart options
-	var options = {'width': chart_width,
-	               'height': 600,
-	               pieHole: 0.4,
-	               legend: { position: 'top', maxLines: 3},
-	           		isStacked: true};
+	// Generated color gradient from http://www.perbang.dk/rgbgradient/ 
+	var options = {'width': chart_width * 0.7,
+	               'height': 400,
+	               'legend': 'right',
+	               'pieHole': 0.4,
+	               'pieSliceText': 'value',
+	               'chartArea': {'width': '100%', 'height': '80%'},
+	               'colors': ['#DC3912','#C5512C','#AF6A46','#998361','#839B7B','#6DB496','#57CDB0','#41E6CB']
+	               };
 
 	// Instantiate and draw our chart, passing in some options.
 	var chart = new google.visualization.PieChart(
@@ -143,14 +148,14 @@ function drawAgeChart() {
 
 function drawTopicCloud() {
 	
-	[topics_Counts, topicsProposals] = processTopics();
+	[topicsCounts, topicsProposals] = processTopics();
 
 	var tokenized_topics = topics.map(function(obj) { 
 	   var tokenized_topic = obj.slice(6, obj.length);
 	   return tokenized_topic;
 	});
 
-	topic_chart_data = mergeAsTuples(tokenized_topics, topics_Counts);
+	topic_chart_data = mergeAsTuples(tokenized_topics, topicsCounts);
 	
 	// for word cloud
 	topic_wordcloud_data = [];
@@ -160,19 +165,28 @@ function drawTopicCloud() {
 		var counts = topic_chart_data[i][1];
 		topic_wordcloud_data.push({
 			"text": tag,
-			"weight": counts
+			"weight": counts,
+			afterWordRender: function() {
+				this.hover(function(){
+					var topic = "topic_" + $(this).text();
+		     		$('#topicProposalNumber').text(
+		     			topicsProposals[topic].length + "/462");
+				}, function(){
+					$('#topicProposalNumber').text("462");
+				})
+			}
 		});
 	}
 
-	$('#topicCloud').jQCloud(topic_wordcloud_data, {
+	var wordCloud = $('#topicCloud').jQCloud(topic_wordcloud_data, {
+	  autoResize: true,
 	  width: chart_width,
-	  height: 500,
 	  shape: "rectangular"
 	});
-
+	$("#topicCloud").attr('auto-resize', true);
 }
 
 $( window ).resize(function() {
-  chart_width = $(window).width() * 0.8;
+  chart_width = $(window).width() * 0.6;
   drawAgeChart();
 });
