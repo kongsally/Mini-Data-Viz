@@ -11,7 +11,7 @@ In this tutorial I will go over how I parsed the data in order to integrate it w
 * [Google Charts](https://developers.google.com/chart/)
 * [jqCloud2](https://www.npmjs.com/package/jqcloud2) (I used jqCloud2 instead of [jqCloud](http://mistic100.github.io/jQCloud/) for its autoresize feature) 
 
-## Table of Contents
+## Step-by-Step Guideline
 #### 1. Understanding the monument lab geojson file
 * The geojson file contains a list of feature objects where each feature has two attributes:
     * Geometry: an object that describes the point coordinate (lat, long) of where the proposed art should be.
