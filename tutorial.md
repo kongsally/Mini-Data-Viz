@@ -18,8 +18,7 @@ In this tutorial I will go over how I parsed the data in order to integrate it w
     * Properties: an object that includes the name, title, and topics of the proposal as attributes
 * **Think of each feature as a proposal** 
 * For each proposal, its properties object has different **topics as attributes** where the value is 1 if that topic is relevant to the proposal and “null” if not. Example:
-    * ```
-    {..."topic_war":null,"topic_violence":1,"topic_unity":null...}```
+    * ```{..."topic_war":null,"topic_violence":1,"topic_unity":null...}```
  * For each proposal, its properties object also has an **age attribute** that represents the age of the person who made the proposal.
 
 #### 2. Setting up callback functions for drawing the charts
