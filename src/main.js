@@ -1,21 +1,104 @@
-
-var geoJson_data;
+var geoJSONData;
 var topics = [];
-var chart_width = $(window).width() * 0.6;
+var chartWidth = $(window).width() * 0.6;
+
+// Load the Visualization API and the bar package.
+google.charts.load('current', {'packages':['corechart']});
+
+// Set a callback to run when the Google Visualization API is loaded.
+google.charts.setOnLoadCallback(drawCharts);
+
+function drawCharts() {
+  // pass in the draw chart functions as callback once the geojson is loaded
+  loadGeoJson(drawAgeChart, drawTopicCloud);
+}
 
 function loadGeoJson(drawAgeChart, drawTopicCloud) {
-	$.getJSON("assets/monument_lab_master.geojson", function( data ) { 
-      	geoJson_data = data.features;
-      	console.log(geoJson_data);
+	$.getJSON('assets/monument_lab_master.geojson', function( data ) { 
+  	geoJSONData = data.features;
+  	
+    // filter all topics from the first entry's list of properties
+  	topics = Object.keys(geoJSONData[0].properties).filter(function(property) {
+    	return property.indexOf('topic') == 0;
+    });
 
-      	// Make a dictionary with the topics
-      	topics = Object.keys(geoJson_data[0].properties).filter(function(k) {
-		    	return k.indexOf('topic') == 0;
-		});
-
-      	drawAgeChart();
-      	drawTopicCloud();
+    // draw the chart and word cloud only after the geojson file was loaded
+  	drawAgeChart();
+  	drawTopicCloud();
   });
+}
+
+function drawAgeChart() {
+  
+  // Create the data table.
+  var ageRangeData = new google.visualization.DataTable();
+  ageRangeData.addColumn('string', 'Age Range');
+  ageRangeData.addColumn('number', 'Number of Participants');
+  
+  var n = 9;
+  ageRangeLabels = createAgeRangeLabels(n);
+  ageRangeCounts = countAges(n);
+  
+  ageChartData = mergeAsTuples(ageRangeLabels, ageRangeCounts);
+
+  ageRangeData.addRows(ageChartData);
+
+  // Set chart options
+  // Generated color gradient from http://www.perbang.dk/rgbgradient/ 
+  var options = {'width': chartWidth * 0.7,
+                 'height': 400,
+                 'legend': 'right',
+                 'pieHole': 0.4,
+                 'pieSliceText': 'value',
+                 'chartArea': {'width': '100%'},
+                 'colors': ['#DC3912','#C5512C','#AF6A46','#998361','#839B7B','#6DB496','#57CDB0','#41E6CB']
+                 };
+
+  // Instantiate and draw our chart, passing in some options.
+  var chart = new google.visualization.PieChart(
+    document.getElementById('age-chart'));
+
+  chart.draw(ageRangeData, options);
+}
+
+function drawTopicCloud() {
+
+  // tokenize the topic by removing the word 'topic_' from each topic name
+  // ex. topic_neighborhood => neighborhood
+  var tokenizedTopics = topics.map(function(obj) { 
+     var tokenizedTopic = obj.slice(6, obj.length);
+     return tokenizedTopic;
+  });
+
+  topicsCounts = countTopics();
+  topicChartData = mergeAsTuples(tokenizedTopics, topicsCounts);
+
+  var words = topicChartData.map(function (topicCountTuple) {
+    var topic = topicCountTuple[0];
+    var count = topicCountTuple[1];
+
+    var word = {
+      "text": topic,
+      "weight": count,
+      afterWordRender: function() {
+        this.hover(function(){
+          var topic = "topic_" + $(this).text();
+            $('#topic-proposal-number').text(
+              count+ "/462");
+        }, function(){
+          $('#topic-proposal-number').text("462");
+        })
+      }
+    }
+    return word;
+  });
+
+  var wordCloud = $('#topic-cloud').jQCloud(words, {
+    autoResize: true,
+    width: chartWidth,
+    shape: "rectangular"
+  });
+
 }
 
 function isNaturalNumber (str) {
@@ -23,170 +106,62 @@ function isNaturalNumber (str) {
     return pattern.test(str);
 }
 
-function mergeAsTuples(labels, ageCounts) {
-	var length = labels.length;
-	var mergedArray = [];
-	for (var i = 0; i < length; i++) {
-		mergedArray.push([labels[i], ageCounts[i]]);
-	}
-	return mergedArray;
-}
-
-function processAgeRange(n) {
-	
-	var ageRange_counts = Array(n).fill(0);
-	
-	reported_age_count = 0;
-
-	// Creating an object of ages and its counts
-	for (var i = 0; i < geoJson_data.length; i++) {
-		var currentAge = geoJson_data[i].properties["age"];
-		if (!isNaturalNumber(currentAge)) {
-			continue;
-		} else {
-			reported_age_count += 1;
-			ageRange_counts[parseInt(currentAge/10)] += 1;
-		}	
-	}
-
-	console.log(reported_age_count + " people reported age");
-	return ageRange_counts;
-}
-
-function processTopics() {
-
-	var topics_n = topics.length;
-	var topics_count = Array(topics_n).fill(0);
-	var topics_proposals = Object.keys(geoJson_data[0].properties)
-		.filter(function(k) {
-		    return k.indexOf('topic') == 0;
-		}).reduce(function(newData, k) {
-		    newData[k] = [];
-		    return newData;
-		}, {});
-
-	
-	// Creating an object of topics and proposal descriptions
-	for (var i = 0; i < geoJson_data.length; i++) {
-		for (var j = 0; j < topics_n; j++) {
-			var currentTopic = topics[j];
-			var hasTag = geoJson_data[i].properties[currentTopic];
-			if (!hasTag) {
-				continue;
-			} else {
-				topics_count[j] += 1;
-				var name = geoJson_data[i].properties["name"];
-				var transcription = geoJson_data[i].properties["transcript"];
-
-				var entry = name + ": " + transcription;
-				if(entry.length > 1
-				 && !topics_proposals[currentTopic].includes(entry)) {
-					topics_proposals[currentTopic].push(entry);
-				}	
-			}	
-		}
-	}
-
-	return [topics_count, topics_proposals];
-}
-
-
-// Load the Visualization API and the bar package.
-google.charts.load('current', {'packages':['corechart']});
-
-// Set a callback to run when the Google Visualization API is loaded.
-google.charts.setOnLoadCallback(setupChart);
-
-function setupChart() {
-	loadGeoJson(drawAgeChart, drawTopicCloud);
+function mergeAsTuples(labels, counts) {
+	var tupleArray = labels.map(function (label, index, array) {
+    return [label, counts[index]]
+  });
+	return tupleArray;
 }
 
 function createAgeRangeLabels(n) {
-	var labels = []
-	for (var i = 0; i <= n; i++) {
-		labels.push((i*10) + "-" + (i*10+9));
-	}
-	return labels;
+  var labels = []
+  for (var i = 0; i <= n; i++) {
+    labels.push((i*10) + "-" + (i*10+9));
+  }
+  console.log(labels);
+  return labels;
 }
 
-function drawAgeChart() {
+function countAges(n) {
 	
-	// Create the data table.
-	var age_range_data = new google.visualization.DataTable();
-	age_range_data.addColumn('string', 'Age Range');
-	age_range_data.addColumn('number', 'Number of Participants');
+	var ageRangeCounts = Array(n).fill(0);
 	
-	var n = 16;
-	ageRange_Labels = createAgeRangeLabels(n);
-	ageRange_Counts = processAgeRange(n);
-	topics_Counts = processTopics();
-
-	age_chart_data = mergeAsTuples(ageRange_Labels, ageRange_Counts);
-	tag_chart_data = mergeAsTuples(topics, topics_Counts);
-
-	console.log(age_chart_data);
-
-	age_range_data.addRows(age_chart_data);
-
-	// Set chart options
-	// Generated color gradient from http://www.perbang.dk/rgbgradient/ 
-	var options = {'width': chart_width * 0.7,
-	               'height': 400,
-	               'legend': 'right',
-	               'pieHole': 0.4,
-	               'pieSliceText': 'value',
-	               'chartArea': {'width': '100%', 'height': '80%'},
-	               'colors': ['#DC3912','#C5512C','#AF6A46','#998361','#839B7B','#6DB496','#57CDB0','#41E6CB']
-	               };
-
-	// Instantiate and draw our chart, passing in some options.
-	var chart = new google.visualization.PieChart(
-		document.getElementById('ageChart'));
-
-	chart.draw(age_range_data, options);
-}
-
-function drawTopicCloud() {
-	
-	[topicsCounts, topicsProposals] = processTopics();
-
-	var tokenized_topics = topics.map(function(obj) { 
-	   var tokenized_topic = obj.slice(6, obj.length);
-	   return tokenized_topic;
-	});
-
-	topic_chart_data = mergeAsTuples(tokenized_topics, topicsCounts);
-	
-	// for word cloud
-	topic_wordcloud_data = [];
-	for (var i = 0; i < topic_chart_data.length; i++) {
-		var tag = topic_chart_data[i][0];
-		tag.replace(/_/g, ' ');
-		var counts = topic_chart_data[i][1];
-		topic_wordcloud_data.push({
-			"text": tag,
-			"weight": counts,
-			afterWordRender: function() {
-				this.hover(function(){
-					var topic = "topic_" + $(this).text();
-		     		$('#topicProposalNumber').text(
-		     			topicsProposals[topic].length + "/462");
-				}, function(){
-					$('#topicProposalNumber').text("462");
-				})
-			}
-		});
+	// Creating an object of ages and its counts
+	for (var i = 0; i < geoJSONData.length; i++) {
+		var currentAge = geoJSONData[i].properties["age"];
+		if (!isNaturalNumber(currentAge)) {
+			continue;
+		} else {
+			ageRangeCounts[parseInt(currentAge/10)] += 1;
+		}	
 	}
 
-	var wordCloud = $('#topicCloud').jQCloud(topic_wordcloud_data, {
-	  autoResize: true,
-	  width: chart_width,
-	  shape: "rectangular"
-	});
-	$("#topicCloud").attr('auto-resize', true);
+	return ageRangeCounts;
 }
 
-$( window ).resize(function() {
-  chart_width = $(window).width() * 0.6;
+function countTopics() {
+
+	var topics_n = topics.length;
+	var topicsCount = Array(topics_n).fill(0);
+	
+	// Iterate through each entry, find which topics it is related to,
+  // then keep count of topics that emerges from each proposal 
+	for (var i = 0; i < geoJSONData.length; i++) {
+		for (var j = 0; j < topics_n; j++) {
+			var currentTopic = topics[j];
+			var hasTag = geoJSONData[i].properties[currentTopic];
+			if (!hasTag) {
+				continue;
+			} else {
+				topicsCount[j] += 1;
+			}	
+		}
+	}
+	return topicsCount;
+}
+
+
+$(window).resize(function() {
+  chartWidth = $(window).width() * 0.6;
   drawAgeChart();
 });

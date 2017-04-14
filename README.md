@@ -1,6 +1,13 @@
-# Mini Data Visualization Project
+# Philadelphia Public Art Proposals: 
+## A Mini Data Visualization Project
 
-A mini data visualization project using the Public Art Proposal data made available in Open Data Philly and collected by Monument Lab + Haverford Digital Scholarship. 
+In the year 2015, the Monument Lab and the Haverford Digital Scholarship program collected 400+ public art proposals from Philadelphians, and made this data public through [Open Data Philly](https://www.opendataphilly.org/). I created this mini data visualization project to show how I used this open data to better understand the people involved in this project and the proposals they made. 
 
+### [A step by step tutorial on how I made the visualizations](./tutorial.md)
+ 
+#### Word cloud of proposal topics
 ![Topic Word Cloud](./assets/TopicWordCloud.png)
+
+
+#### Donut chart of proposals made by different age groups
 ![Age Donut Chart](./assets/AgeDonutChart.png)

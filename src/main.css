@@ -13,7 +13,7 @@ a, a:visited {
 	text-decoration: underline;
 }
 
-.header {
+.section {
 	background-color: #E2EFDE;
 	color: #374B4A;
 	font-family: 'Roboto Slab', serif;
@@ -48,12 +48,12 @@ a, a:visited {
 	padding: 0 10% 0 10%;
 }
 
-#topicCloud {
+#topic-cloud {
 	height: 500px;
 	padding: 1em;
 }
 
-#topicProposalNumberWrapper {
+#topic-proposal-number-wrapper {
 	flex-grow: 1;
 	display: flex;
   	justify-content: center;
@@ -62,23 +62,23 @@ a, a:visited {
   	margin: 1em;
 }
 
-#topicProposalNumberWrapper > h1 {
+#topic-proposal-number-wrapper > h1 {
 	align-self: center;
 	text-align: center;
 	color: #374B4A;
 }
 
-#topicCloud > span:hover, #topicCloud > span::selection{
+#topic-cloud > span:hover, #topic-cloud > span::selection{
 	background-color: #E2EFDE;
     color: #374B4A;
     cursor: pointer;
 }
 
-#topicProposalNumber {
+#topic-proposal-number {
 	text-align: center;
 }
 
-#ageAnalysis {
+#age-analysis {
 	flex-grow: 1;
 	padding: 2em;
 }
