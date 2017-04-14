@@ -11,7 +11,7 @@ In this tutorial I will go over how I parsed the data in order to integrate it w
 * [Google Charts](https://developers.google.com/chart/)
 * [jqCloud2](https://www.npmjs.com/package/jqcloud2) (I used jqCloud2 instead of [jqCloud](http://mistic100.github.io/jQCloud/) for its autoresize feature) 
 
-## Table of Content
+## Table of Contents
 * Loading a geojson file using jQuery
 * Creating a pie chart using Google Charts
   * Loading the visualization API
