@@ -11,7 +11,7 @@ In this tutorial I will go over how I parsed the data in order to integrate it w
 * [Google Charts](https://developers.google.com/chart/)
 * [jqCloud2](https://www.npmjs.com/package/jqcloud2) (I used jqCloud2 instead of [jqCloud](http://mistic100.github.io/jQCloud/) for its autoresize feature) 
 
-## Table of Contents
+## Step-by-Step Guideline
 #### 1. Understanding the monument lab geojson file
 * The geojson file contains a list of feature objects.**Think of each feature as a proposal**. Each feature has two attributes:
     * Geometry: an object that describes the point coordinate (lat, long) of where the proposed art should be.
@@ -43,8 +43,6 @@ In this tutorial I will go over how I parsed the data in order to integrate it w
     ```
   * From the sample, we can see that properties object has an **age attribute** that represents the age of the person who made the proposal.
    * We can also see that the properties object has different **topics as attributes** where the value is 1 if that topic is relevant to the proposal and “null” if not.     
-     
-
 
 #### 2. Setting up callback functions for drawing the charts
 * For drawing the charts, we want to make sure we first load the needed library, load the geojson file, then draw the charts. We will use callback functions to ensure this order. 
