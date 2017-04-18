@@ -2,7 +2,7 @@ var geoJSONData;
 var topics = [];
 var chartWidth = $(window).width() * 0.6;
 
-// Load the Visualization API and the bar package.
+// Load the Visualization API and the corechart package which has the pie chart.
 google.charts.load('current', {'packages':['corechart']});
 
 // Set a callback to run when the Google Visualization API is loaded.
@@ -29,19 +29,21 @@ function loadGeoJson(drawAgeChart, drawTopicCloud) {
 }
 
 function drawAgeChart() {
-  
-  // Create the data table.
-  var ageRangeData = new google.visualization.DataTable();
-  ageRangeData.addColumn('string', 'Age Range');
-  ageRangeData.addColumn('number', 'Number of Participants');
-  
-  var n = 9;
+
+  // Get list of age range labels and counts
+  var n = 8; 
   ageRangeLabels = createAgeRangeLabels(n);
   ageRangeCounts = countAges(n);
-  
-  ageChartData = mergeAsTuples(ageRangeLabels, ageRangeCounts);
 
-  ageRangeData.addRows(ageChartData);
+  // Merge the label and count lists as a list of tuples so that 
+  // we can add it as rows to the DataTable
+  ageChartData = mergeAsTuples(ageRangeLabels, ageRangeCounts);
+  
+  // Create the data table.
+  var ageDataTable = new google.visualization.DataTable();
+  ageDataTable.addColumn('string', 'Age Range');
+  ageDataTable.addColumn('number', 'Number of Participants');
+  ageDataTable.addRows(ageChartData);
 
   // Set chart options
   // Generated color gradient from http://www.perbang.dk/rgbgradient/ 
@@ -57,8 +59,7 @@ function drawAgeChart() {
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.PieChart(
     document.getElementById('age-chart'));
-
-  chart.draw(ageRangeData, options);
+  chart.draw(ageDataTable, options);
 }
 
 function drawTopicCloud() {
@@ -73,6 +74,7 @@ function drawTopicCloud() {
   topicsCounts = countTopics();
   topicChartData = mergeAsTuples(tokenizedTopics, topicsCounts);
 
+  // need to create a list of word object that has the properties text and weight
   var words = topicChartData.map(function (topicCountTuple) {
     var topic = topicCountTuple[0];
     var count = topicCountTuple[1];
@@ -81,6 +83,7 @@ function drawTopicCloud() {
       "text": topic,
       "weight": count,
       afterWordRender: function() {
+        // updates the number of topic proposals 
         this.hover(function(){
           var topic = "topic_" + $(this).text();
             $('#topic-proposal-number').text(

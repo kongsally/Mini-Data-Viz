@@ -1,0 +1,23 @@
+{
+  "name": "philly-public-art-proposal-visualization",
+  "version": "1.0.0",
+  "description": "In the year 2015, the Monument Lab and the Haverford Digital Scholarship program collected 400+ public art proposals from Philadelphians, and made this data public through [Open Data Philly](https://www.opendataphilly.org/). I created this mini data visualization project to show how I used this open data to better understand the people involved in this project and the proposals they made.",
+  "main": "index.js",
+  "dependencies": {
+    "jqcloud2": "^2.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kongsally/Mini-Data-Viz.git"
+  },
+  "author": "Sally Kong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kongsally/Mini-Data-Viz/issues"
+  },
+  "homepage": "https://github.com/kongsally/Mini-Data-Viz#readme"
+}
